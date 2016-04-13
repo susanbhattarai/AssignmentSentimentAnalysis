@@ -2,6 +2,7 @@ import sys
 import json
 import os
 import re
+import pprint
 #Class for storing the sentiment words and its corresponding score 
 #and lookup features
 class SentimentScore(object):
@@ -31,11 +32,24 @@ def tweet_loader(tweet_file):
 	#(tweet_file)
 	tweet_list = []
 	for line in tweet_file:
-		if len(line) != 0:
-			tweet_object = json.loads(line.strip())
-			tweet_list.append(tweet_object)
-
+		tweet_object = json.loads(line.strip())
+		tweet_list = tweet_object['statuses']
 	return tweet_list
+
+	'''
+	Below code snippets only work for the raw json output
+	'''
+	# int_counter = 0
+	# for line in tweet_file:
+	# 	if len(line) != 0:
+	# 		tweet_object = json.loads(line.strip())
+	# 		# tweet_object = tweet_object['statuses']
+	# 		# print (tweet_object['statuses'][0])
+	# 		# break
+	# 		int_counter += 1
+	# 		tweet_list.append(tweet_object)
+	# # pprint.pprint(tweet_list)
+	# return tweet_list
 
 
 def get_text(tweet_list):
@@ -52,6 +66,8 @@ def get_sentiments(sent_file, tweet_file):
 	tweets_raw = tweet_loader(tweet_file)
 	sentiment_score = SentimentScore(sent_file)
 	tweets_text = get_text(tweets_raw)
+	print tweets_text
+
 	sum_by_tweet = []
 	for words in tweets_text:
 		tweet_scores = [sentiment_score.get_sentiment_score(i.lower()) for i in words]

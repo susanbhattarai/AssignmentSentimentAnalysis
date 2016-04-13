@@ -3,6 +3,7 @@ import urllib2 as urllib
 import os
 import auth
 import json
+import sys
 # See assignment1.html instructions or README for how to get these credentials
 
 # api_key = os.environ['api_key']
@@ -57,7 +58,8 @@ def twitterreq(url, method, parameters):
   return response
 
 def fetchsamples():
-  url = "https://api.twitter.com/1.1/search/tweets.json?q=happiness"
+  query = sys.argv[1]
+  url = "https://api.twitter.com/1.1/search/tweets.json?q=" + query
   parameters = []
   response = twitterreq(url, "GET", parameters)
   for line in response:
