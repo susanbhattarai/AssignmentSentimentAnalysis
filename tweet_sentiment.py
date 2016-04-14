@@ -66,14 +66,14 @@ def get_sentiments(sent_file, tweet_file):
 	tweets_raw = tweet_loader(tweet_file)
 	sentiment_score = SentimentScore(sent_file)
 	tweets_text = get_text(tweets_raw)
-	print tweets_text
+	# print tweets_text
 
 	sum_by_tweet = []
 	for words in tweets_text:
 		tweet_scores = [sentiment_score.get_sentiment_score(i.lower()) for i in words]
 		total_score = sum(tweet_scores)
-		if total_score <= -5:
-			print words
+		# if total_score <= -5:
+			# print words
 		sum_by_tweet.append(total_score)
 		print total_score
 	print "Total Tweets Proceeded: %s" %len(tweets_raw)
