@@ -1,66 +1,51 @@
 import sys
 import json
-import os
 import re
-import pprint
-#Class for storing the sentiment words and its corresponding score 
-#and lookup features
-class SentimentScore(object):
-	_build = None
 
+"""Sentiment Score class for building the 
+	sentiment score of words
+"""
+class SentimentScore(object):
+	_build =None #Private variable build
 	def __init__(self, sent_file):
-		if SentimentScore._build is None:
+		if SentimentScore._build == None:
 			SentimentScore._lookup = self._build_sentiment(sent_file)
 
 	def _build_sentiment(self, sent_file):
-		scores = {}
+		scores  = {}
 		for line in sent_file:
-			word, score = line.split("\t")
-			scores[word] = int(score)
+			word, score = line.split('\t')
+			scores[word] = float(score)
 		return scores
 
-	def get_sentiment_score(self, word):
+	def get_sentiment_score(self,word):
 		if word in self._lookup:
 			return self._lookup[word]
-		return 0
+		return 0 #If words not in text , asssume it's score is zero
 
-
+"""
+Load the tweets (raw JSON) courtesy of twitterstream API
+"""
 def tweet_loader(tweet_file):
-	"""
-	Use JSON data from Twitter API to generate Python object
-	"""
-	#(tweet_file)
-	tweet_list = []
+	"From Twitter API"
+	tweet_list = [] #List for saving the individual tweets JSON
 	for line in tweet_file:
 		tweet_object = json.loads(line.strip())
-		tweet_list = tweet_object['statuses']
-	return tweet_list
+		tweet_list = tweet_object['statuses'] #Get the value from JSON
+	return tweet_list #Return the list of tweets
 
-	'''
-	Below code snippets only work for the raw json output
-	'''
-	# int_counter = 0
-	# for line in tweet_file:
-	# 	if len(line) != 0:
-	# 		tweet_object = json.loads(line.strip())
-	# 		# tweet_object = tweet_object['statuses']
-	# 		# print (tweet_object['statuses'][0])
-	# 		# break
-	# 		int_counter += 1
-	# 		tweet_list.append(tweet_object)
-	# # pprint.pprint(tweet_list)
-	# return tweet_list
-
-
+"""
+Get the appropriate text from the JSON file using regex
+"""
 def get_text(tweet_list):
-	all_text = []
-	regx_pattern = r'[A-Za-z]+'
-	for tweets in tweet_list:
-		if 'text' not in tweets.keys():
+	all_tweet_text = [] #List for storing the tweet words list
+	reg_pattern = r'[A-Za-z]+' #Pattern for getting a word
+	for individual_tweet in tweet_list: #Loop over tweet list
+		if 'text' not in individual_tweet.keys():
 			continue
-		words_list = re.findall(regx_pattern, tweets['text'])
-		all_text.append(words_list)
-	return all_text
+		word_list = re.findall(reg_pattern, individual_tweet['text']) #Get a list of words
+		all_tweet_text.append(word_list) #Insert into all_tweet_text
+	return all_tweet_text #Return 
 
 def get_sentiments(sent_file, tweet_file):
 	tweets_raw = tweet_loader(tweet_file)
@@ -82,18 +67,10 @@ def get_sentiments(sent_file, tweet_file):
 
 
 
-def hw():
-    print 'Hello, world!'
-
-def lines(fp):
-    print str(len(fp.readlines()))
-
 def main():
     sent_file = open(sys.argv[1])
     tweet_file = open(sys.argv[2])
     get_sentiments(sent_file, tweet_file)
-    # lines(sent_file)
-    # lines(tweet_file)
 
 if __name__ == '__main__':
     main()
